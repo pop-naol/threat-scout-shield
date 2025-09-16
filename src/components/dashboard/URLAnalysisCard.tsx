@@ -1,39 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Globe, ExternalLink, AlertCircle } from "lucide-react";
-
-interface URLAnalysis {
-  url: string;
-  riskScore: number;
-  status: 'safe' | 'suspicious' | 'malicious';
-  lastScanned: string;
-  flags: string[];
-}
+import { useRealTimeThreats } from "@/hooks/useRealTimeThreats";
 
 export const URLAnalysisCard = () => {
-  const recentAnalyses: URLAnalysis[] = [
-    {
-      url: "example-suspicious.com",
-      riskScore: 75,
-      status: 'suspicious',
-      lastScanned: '2 min ago',
-      flags: ['Suspicious Domain', 'No SSL']
-    },
-    {
-      url: "trusted-site.com",
-      riskScore: 15,
-      status: 'safe',
-      lastScanned: '5 min ago',
-      flags: ['Valid SSL', 'Clean History']
-    },
-    {
-      url: "malware-host.net",
-      riskScore: 95,
-      status: 'malicious',
-      lastScanned: '8 min ago',
-      flags: ['Known Malware', 'Phishing Detected']
-    }
-  ];
+  const { urlAnalyses, loading } = useRealTimeThreats();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -50,6 +21,29 @@ export const URLAnalysisCard = () => {
     return 'text-cyber-success';
   };
 
+  if (loading) {
+    return (
+      <Card className="bg-gradient-cyber border-border shadow-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-foreground">
+            <Globe className="h-5 w-5 text-cyber-primary animate-pulse" />
+            URL Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="border border-border rounded-lg p-3 space-y-2">
+                <div className="h-4 bg-muted/20 rounded animate-pulse" />
+                <div className="h-3 bg-muted/20 rounded animate-pulse w-3/4" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="bg-gradient-cyber border-border shadow-card">
       <CardHeader>
@@ -60,8 +54,8 @@ export const URLAnalysisCard = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {recentAnalyses.map((analysis, index) => (
-            <div key={index} className="border border-border rounded-lg p-3 space-y-2">
+          {urlAnalyses.slice(0, 3).map((analysis, index) => (
+            <div key={analysis.id || index} className="border border-border rounded-lg p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -78,11 +72,13 @@ export const URLAnalysisCard = () => {
                 <div className="flex items-center gap-2">
                   <AlertCircle className="h-4 w-4 text-muted-foreground" />
                   <span className="text-xs text-muted-foreground">Risk Score:</span>
-                  <span className={`text-sm font-bold ${getRiskScoreColor(analysis.riskScore)}`}>
-                    {analysis.riskScore}/100
+                  <span className={`text-sm font-bold ${getRiskScoreColor(analysis.risk_score)}`}>
+                    {analysis.risk_score}/100
                   </span>
                 </div>
-                <span className="text-xs text-muted-foreground">{analysis.lastScanned}</span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(analysis.analyzed_at).toLocaleTimeString()}
+                </span>
               </div>
               
               <div className="flex flex-wrap gap-1">
@@ -98,7 +94,7 @@ export const URLAnalysisCard = () => {
         
         <div className="mt-4 pt-4 border-t border-border text-center">
           <span className="text-xs text-muted-foreground">
-            Analyzed 1,247 URLs in the last 24 hours
+            Analyzed {urlAnalyses.length} URLs • Real-time monitoring active
           </span>
         </div>
       </CardContent>

@@ -6,8 +6,11 @@ import { ReconResultsCard } from "@/components/dashboard/ReconResultsCard";
 import { ThreatTimelineCard } from "@/components/dashboard/ThreatTimelineCard";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Activity, Globe, AlertTriangle } from "lucide-react";
+import { useRealTimeThreats } from "@/hooks/useRealTimeThreats";
 
 const Index = () => {
+  const { stats, loading } = useRealTimeThreats();
+
   return (
     <div className="min-h-screen bg-gradient-cyber p-6">
       {/* Header */}
@@ -30,7 +33,9 @@ const Index = () => {
             </div>
             <div className="text-right">
               <div className="text-sm text-foreground font-medium">Security Score</div>
-              <div className="text-2xl font-bold text-cyber-primary">94.7%</div>
+              <div className="text-2xl font-bold text-cyber-primary">
+                {loading ? '...' : stats ? `${stats.protection_rate.toFixed(1)}%` : '94.7%'}
+              </div>
             </div>
           </div>
         </div>
@@ -42,7 +47,9 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <Shield className="h-8 w-8 text-cyber-success" />
             <div>
-              <div className="text-2xl font-bold text-foreground">1,247</div>
+              <div className="text-2xl font-bold text-foreground">
+                {loading ? '...' : stats ? stats.total_requests.toLocaleString() : '1,247'}
+              </div>
               <div className="text-xs text-muted-foreground">URLs Scanned</div>
             </div>
           </div>
@@ -52,7 +59,9 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <AlertTriangle className="h-8 w-8 text-cyber-danger" />
             <div>
-              <div className="text-2xl font-bold text-foreground">23</div>
+              <div className="text-2xl font-bold text-foreground">
+                {loading ? '...' : stats ? stats.blocked_threats : '23'}
+              </div>
               <div className="text-xs text-muted-foreground">Threats Blocked</div>
             </div>
           </div>
@@ -72,7 +81,9 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <Activity className="h-8 w-8 text-cyber-warning" />
             <div>
-              <div className="text-2xl font-bold text-foreground">5</div>
+              <div className="text-2xl font-bold text-foreground">
+                {loading ? '...' : stats ? stats.critical_alerts : '5'}
+              </div>
               <div className="text-xs text-muted-foreground">Active Threats</div>
             </div>
           </div>
@@ -103,7 +114,8 @@ const Index = () => {
       {/* Footer */}
       <footer className="mt-12 pt-8 border-t border-border text-center">
         <p className="text-muted-foreground text-sm">
-          UTIWSP Dashboard v1.0 • Real-time cybersecurity monitoring • Last updated: {new Date().toLocaleTimeString()}
+          UTIWSP Dashboard v1.0 • Real-time cybersecurity monitoring • 
+          {stats ? ` Last updated: ${new Date(stats.last_updated).toLocaleTimeString()}` : ' Connected to database'}
         </p>
       </footer>
     </div>
