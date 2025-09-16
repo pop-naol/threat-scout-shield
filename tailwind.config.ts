@@ -47,6 +47,24 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Cybersecurity specific colors
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        cyber: {
+          primary: "hsl(var(--cyber-primary))",
+          secondary: "hsl(var(--cyber-secondary))",
+          accent: "hsl(var(--cyber-accent))",
+          success: "hsl(var(--cyber-success))",
+          warning: "hsl(var(--cyber-warning))",
+          danger: "hsl(var(--cyber-danger))",
+          neutral: "hsl(var(--cyber-neutral))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,6 +75,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        'gradient-primary': 'var(--gradient-primary)',
+        'gradient-danger': 'var(--gradient-danger)',
+        'gradient-success': 'var(--gradient-success)',
+        'gradient-cyber': 'var(--gradient-cyber)',
+      },
+      boxShadow: {
+        'cyber': 'var(--shadow-cyber)',
+        'glow': 'var(--shadow-glow)',
+        'card': 'var(--shadow-card)',
       },
       borderRadius: {
         lg: "var(--radius)",
